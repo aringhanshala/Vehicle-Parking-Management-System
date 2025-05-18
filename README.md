@@ -6,8 +6,9 @@ It allows users to:
 - 📥 Manage vehicle check-in and check-out
 - 🕒 Record timestamps using the system time
 - 🧾 Generate parking charges
-- 📄 Maintain vehicle history using file handling
 - 🚘 Support different vehicle types and slot allocation
+- 📄 Maintain vehicle history using file handling
+- 🔍 Search vehicle details using number plate
 
 ---
 
