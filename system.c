@@ -214,7 +214,7 @@ void checkIn() {
         if (isValidPlate(v.plateNumber)) {
             break;
         } else {
-            printf("\nInvalid plate number format. Please re-enter\n");
+            printf("Invalid plate number format. Please re-enter\n");
         }
     }
 
@@ -226,7 +226,7 @@ void checkIn() {
         if (isValidVehicleType(v.vehicleType)) {
             break;
         } else {
-            printf("Invalid vehicle type. Please re-enter.\n");
+            printf("Invalid vehicle type. Please re-enter.\n\n");
         }
     }
 
