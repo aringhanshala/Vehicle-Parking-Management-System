@@ -6,7 +6,7 @@
 #include<string.h>
 #include<time.h>
 #include<stdlib.h>
-#define max_slots 20     
+#define max_slots 20
 
 
 // Slot tracking array: 0= available, 1= occupied
@@ -32,6 +32,10 @@ void viewHistory();
 void loadSlotStatus();
 int findFreeSlot();
 void searchVehicle();
+int isUpperLetter(char ch);
+int isDigit(char ch);
+int isValidPlate(char plate[]);
+int isValidVehicleType(char type[]);
 
 
 // Main function
@@ -133,11 +137,62 @@ int findFreeSlot(){
 }
 
 
+// Helper function to check if a character is uppercase letter
+int isUpperLetter(char ch) {
+    return ch >= 'A' && ch <= 'Z';
+}
+
+
+// Helper function to check if a character is digit
+int isDigit(char ch) {
+    return ch >= '0' && ch <= '9';
+}
+
+
+// Plate number validation
+int isValidPlate(char plate[]) {
+    int len = strlen(plate);
+
+    if (len == 9) {
+        return isUpperLetter(plate[0]) &&
+               isUpperLetter(plate[1]) &&
+               isDigit(plate[2]) &&
+               isDigit(plate[3]) &&
+               isUpperLetter(plate[4]) &&
+               isDigit(plate[5]) &&
+               isDigit(plate[6]) &&
+               isDigit(plate[7]) &&
+               isDigit(plate[8]);
+    } else if (len == 10) {
+        return isUpperLetter(plate[0]) &&
+               isUpperLetter(plate[1]) &&
+               isDigit(plate[2]) &&
+               isDigit(plate[3]) &&
+               isUpperLetter(plate[4]) &&
+               isUpperLetter(plate[5]) &&
+               isDigit(plate[6]) &&
+               isDigit(plate[7]) &&
+               isDigit(plate[8]) &&
+               isDigit(plate[9]);
+    }
+
+    return 0;
+}
+
+
+// Vehicle type validation
+int isValidVehicleType(char type[]) {
+    return strcmp(type, "car") == 0 ||
+           strcmp(type, "bike") == 0 ||
+           strcmp(type, "scooty") == 0;
+}
+
+
 // Vehicle check-in function
 void checkIn() {
-    FILE *fp= fopen("parking.txt", "a");     // Opening text file
+    FILE *fp = fopen("parking.txt", "a");     // Opening text file
 
-    if(!fp){
+    if (!fp) {
         printf("Error opening file for check-in.\n");
         return;
     }
@@ -145,27 +200,45 @@ void checkIn() {
     struct Vehicle v;
     int freeSlot = findFreeSlot();
 
-    if(freeSlot == -1) {     // Checking free slot availability
+    if (freeSlot == -1) {
         printf("\nNo parking slots available right now.\n");
-        fclose(fp);     // Closing text file if there is no available slot
+        fclose(fp);
         return;
     }
 
-    printf("\nEnter Plate Number: ");
-    scanf("%s", v.plateNumber);
+    // Validate plate number
+    while (1) {
+        printf("\nEnter Plate Number: ");
+        scanf("%s", v.plateNumber);
 
-    printf("Enter Vehicle Type (car/bike/scooty): ");
-    scanf("%s", v.vehicleType);
+        if (isValidPlate(v.plateNumber)) {
+            break;
+        } else {
+            printf("\nInvalid plate number format. Please re-enter\n");
+        }
+    }
+
+    // Validate vehicle type
+    while (1) {
+        printf("Enter Vehicle Type (car/bike/scooty): ");
+        scanf("%s", v.vehicleType);
+
+        if (isValidVehicleType(v.vehicleType)) {
+            break;
+        } else {
+            printf("Invalid vehicle type. Please re-enter.\n");
+        }
+    }
 
     v.slotNumber = freeSlot;
-    slots[freeSlot - 1] = 1;     // Changing the status of slot to occupied
-
-    getCurrentTime(v.checkInTime);     // Getting the current time of check-in automatically
+    slots[freeSlot - 1] = 1;
+    getCurrentTime(v.checkInTime);
     strcpy(v.checkOutTime, "N/A");
     v.charge = 0.0;
 
-    // Printing the vehicle data in text file
-    fprintf(fp,"%s %s %d %s %s %.2f\n", v.plateNumber, v.vehicleType, v.slotNumber, v.checkInTime, v.checkOutTime, v.charge);
+    fprintf(fp, "%s %s %d %s %s %.2f\n",
+            v.plateNumber, v.vehicleType, v.slotNumber,
+            v.checkInTime, v.checkOutTime, v.charge);
 
     fclose(fp);     // Closing text file
 
