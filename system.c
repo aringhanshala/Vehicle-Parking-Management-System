@@ -231,8 +231,9 @@ void checkIn() {
     }
 
     v.slotNumber = freeSlot;
-    slots[freeSlot - 1] = 1;
-    getCurrentTime(v.checkInTime);
+    slots[freeSlot - 1] = 1;     // Check slot availability
+
+    getCurrentTime(v.checkInTime);      // Get current time
     strcpy(v.checkOutTime, "N/A");
     v.charge = 0.0;
 
